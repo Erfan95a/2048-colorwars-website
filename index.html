@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2048: ColorWars</title>
+  <meta name="description" content="The classic 2048 puzzle game reimagined with vibrant colors, multiple game modes, and endless fun." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f14;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      background: radial-gradient(ellipse at 50% 0%, #3a1a6e 0%, #0f0f14 65%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #7c2ae820 0%, transparent 70%);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #9f73f3;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 8vw, 80px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.05;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #c084fc 0%, #00c4cc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .tagline {
+      font-size: clamp(16px, 3vw, 20px);
+      color: #aaa;
+      font-weight: 400;
+      max-width: 500px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+
+    .badges {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 80px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff10;
+      border: 1px solid #ffffff18;
+      border-radius: 14px;
+      padding: 12px 24px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      transition: background 0.2s, border-color 0.2s;
+      backdrop-filter: blur(10px);
+    }
+
+    .badge:hover {
+      background: #ffffff1a;
+      border-color: #9f73f3;
+    }
+
+    .badge svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+    /* ── Tiles preview ── */
+    .tiles-preview {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 320px;
+    }
+
+    .tile {
+      width: 68px;
+      height: 68px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      box-shadow: 0 8px 24px #0006;
+    }
+
+    /* ── Features ── */
+    .features {
+      padding: 100px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #9f73f3;
+      margin-bottom: 16px;
+    }
+
+    .features h2 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 800;
+      margin-bottom: 60px;
+      letter-spacing: -0.5px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: #ffffff08;
+      border: 1px solid #ffffff10;
+      border-radius: 20px;
+      padding: 32px 28px;
+      text-align: left;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-color: #9f73f340; }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      padding: 100px 24px;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 100%, #3a1a6e40 0%, transparent 70%);
+    }
+
+    .cta h2 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .cta p {
+      color: #888;
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid #ffffff0d;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    footer .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    footer a {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: #9f73f3; }
+
+    footer .copyright {
+      color: #444;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="logo">2048: ColorWars</div>
+    <h1>Merge. Color.<br>Conquer.</h1>
+    <p class="tagline">The classic 2048 puzzle reimagined with vibrant colors, multiple game modes, and endless challenge.</p>
+
+    <div class="badges">
+      <a href="https://apps.apple.com/app/id6745037464" class="badge">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        Download on the App Store
+      </a>
+    </div>
+
+    <div class="tiles-preview">
+      <div class="tile" style="background: linear-gradient(135deg, #a78bfa, #7c3aed)">2</div>
+      <div class="tile" style="background: linear-gradient(135deg, #60a5fa, #2563eb)">4</div>
+      <div class="tile" style="background: linear-gradient(135deg, #34d399, #059669)">8</div>
+      <div class="tile" style="background: linear-gradient(135deg, #fbbf24, #d97706)">16</div>
+      <div class="tile" style="background: linear-gradient(135deg, #f87171, #dc2626)">32</div>
+      <div class="tile" style="background: linear-gradient(135deg, #f472b6, #db2777)">64</div>
+      <div class="tile" style="background: linear-gradient(135deg, #00c4cc, #0891b2)">128</div>
+      <div class="tile" style="background: linear-gradient(135deg, #c084fc, #9333ea)">256</div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="section-label">Features</div>
+    <h2>More ways to play</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎮</div>
+        <h3>Classic 2048</h3>
+        <p>The puzzle you love, now with beautiful color themes and board sizes from 3×3 to 8×8.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Connect Mode</h3>
+        <p>Draw paths to connect matching tiles and create chain reactions for massive scores.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🟦</div>
+        <h3>Tetris Mode</h3>
+        <p>Tiles fall from above — merge them before the board fills up in this fast-paced twist.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3>Color Themes</h3>
+        <p>Unlock stunning color palettes to personalize your board and make every game unique.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Timer Mode</h3>
+        <p>Race against the clock and push your reflexes to the limit with timed challenges.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>Milestones</h3>
+        <p>Track your progress, beat your high score, and unlock achievements as you improve.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Ready to play?</h2>
+    <p>Free to download. Available on iOS.</p>
+    <div class="badges">
+      <a href="https://apps.apple.com/app/id6745037464" class="badge">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        Download on the App Store
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="mailto:erfan.007a@gmail.com">Support</a>
+    </div>
+    <div class="copyright">© 2025 ColorWars. All rights reserved.</div>
+  </footer>
+
+</body>
+</html>
